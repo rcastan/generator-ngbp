@@ -4,14 +4,18 @@
  * the Grunt configuration that is automatically processed.
  */
 
-
+<% if (theme == 'bootstrap') {%>
 /**
  * First, we include the Twitter Bootstrap LESS files. Only the ones used in the
  * project should be imported as the rest are just wasting space.
  */
 
 @import '../../vendor/bootstrap/less/bootstrap.less';
+<%}%>
 
+<% if (theme == 'material') {%>
+@import 'material.less';
+<%}%>
 /**
  * This is our main variables file. We must include it last so we can overwrite any variable
  * definitions in our imported stylesheets.
@@ -31,6 +35,34 @@
   src: local('Roboto Regular'), local('Roboto-Regular'), url(fonts/Roboto-Regular.woff) format('woff');
 }
 
+<% if (theme == 'material') {%>
+html, body {
+  font-family: 'Roboto', sans-serif;
+  font-size:14px;
+  height:100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.menu {
+  background-color: transparent;
+  border: none;
+  height: 38px;
+  margin: 16px;
+  width: 36px;
+}
+
+md-toolbar h1 {
+  margin: auto;
+}
+
+/* Typography support coming in 0.8.0 */
+
+md-toolbar h1 {
+  font-size: 1.250em;
+  font-weight: 400;
+}
+<%}%>
 
 /**
  * Now that all app-wide styles have been applied, we can load the styles for

@@ -45,7 +45,11 @@ module.exports = function(grunt) {
             commonTemplates: [ 'src/common/**/*.tpl.html' ],
 
             html: [ 'src/index.html' ],
-            less: 'src/less/main.less'
+            less: [
+                'src/less/main.less',
+                'src/app/**/*.less',
+                'src/common/**/*.less'
+            ]
         },
 
         /**
@@ -79,14 +83,19 @@ module.exports = function(grunt) {
             js: [
                 'vendor/angular/angular.js',
                 <% if (includeAngularResource) {%>'vendor/angular-resource/angular-resource.js',<% } %>
-                'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
+                <% if (theme == 'bootstrap') {%>'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',<% } %>
+                <% if (theme == 'material') {%>'vendor/angular-material/angular-material.min.js',
+                'vendor/angular-aria/angular-aria.min.js',
+                'vendor/angular-animate/angular-animate.min.js',<% } %>
                 'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
                 'vendor/angular-ui-router/release/angular-ui-router.js',
                 'vendor/angular-ui-utils/modules/route/route.js'
             ],
             css: [
+                <% if (theme == 'material') {%>'vendor/angular-material/angular-material.min.css'<% } %>
             ],
             assets: [
+                <% if (theme == 'material') {%>'vendor/material-design-icons/iconfont/MaterialIcons-Regular.*'<% } %>
             ]
         }
     };

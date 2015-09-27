@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="<%%=appName%>" ng-controller="AppController as ap">
+<head>
+    <title ng-bind="pageTitle"></title>
+
+    <!-- font awesome from BootstrapCDN -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    
+    <!-- font material design -->
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+
+    <!-- compiled CSS --><%% styles.forEach( function ( file ) { %>
+    <link rel="stylesheet" type="text/css" href="<%%= file %>" /><%% }); %>
+
+    <!-- compiled JavaScript --><%% scripts.forEach( function ( file ) { %>
+    <script type="text/javascript" src="<%%= file %>"></script><%% }); %>
+</head>
+<body layout="row">
+    <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
+                md-component-id="left"
+                md-is-locked-open="$mdMedia('gt-sm')">
+        <md-toolbar class="md-whiteframe-z1">
+            <h1><%%=appName%></h1>
+        </md-toolbar>
+        <md-list>
+            <md-list-item ui-sref-active="active">
+                <p ui-sref="home">Home</p>           
+            </md-list-item>
+            <md-list-item ui-sref-active="active">
+                <p ui-sref="about">About</p>              
+            </md-list-item>
+        </md-list>
+    </md-sidenav>
+
+    <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
+        <md-toolbar layout="row" class="md-whiteframe-z1">
+            <md-button class="menu" hide-gt-sm ng-click="ap.toggleMenu()" aria-label="Show Menu">
+                <md-icon class="material-icons md-light md-24">menu</md-icon>
+            </md-button>
+            <h1>{{ pageTitle }}</h1>
+        </md-toolbar>
+        <md-content flex id="content" ui-view="main"></md-content>
+  </div>
+</body>
+</html>

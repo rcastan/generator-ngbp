@@ -65,6 +65,19 @@ var NgbpGenerator = yeoman.generators.Base.extend({
                 message: 'Do you want to include angular-resource, helpful for calling RESTful apis?',
                 default: true
             },
+            {
+                type: 'list',
+                name: 'theme',
+                message: 'What theme do you want to use?',
+                choices: [
+                    'Bootstrap',
+                    'Material' 
+                ],
+                default: 'Bootstrap',
+                filter: function(val) {
+                    return val.toLowerCase();
+                }
+            }
         ];
 
         this.prompt(prompts, function (props) {
@@ -72,6 +85,7 @@ var NgbpGenerator = yeoman.generators.Base.extend({
             this.author = props.author;
             this.useCoffeescript = props.useCoffeescript;
             this.includeAngularResource = props.includeAngularResource;
+            this.theme = props.theme;
 
             done();
         }.bind(this));
@@ -80,6 +94,7 @@ var NgbpGenerator = yeoman.generators.Base.extend({
     config: function() {
         this.config.set('projectName', this.projectName);
         this.config.set('useCoffeescript', this.useCoffeescript);
+        this.config.set('theme', this.theme);
         this.config.save();
     },
 
@@ -87,19 +102,33 @@ var NgbpGenerator = yeoman.generators.Base.extend({
         var root = this.isPathAbsolute(source) ? source : path.join(this.sourceRoot(), source);
         var files = this.expandFiles('**', { dot: true, cwd: root });
         var useCoffeescript = this.config.get('useCoffeescript');
-
+        var useMaterialTpl = this.theme == 'material';
         for (var i = 0; i < files.length; i++) {
             var f = files[i];
             var fExt = f.split('.').pop().toLowerCase();
             var fIsSource = path.dirname(f).split('/').shift() == 'src';
             var isExcluded = false;
+            var isTpl = path.basename(f).indexOf('_') == 0;
+            var isMaterialTpl = path.basename(f).indexOf('_m_') == 0;
+            var isBootstrapTpl = path.basename(f).indexOf('_b_') == 0;
             if (fIsSource) {
-                if ((useCoffeescript && fExt == 'js') || (!useCoffeescript && fExt == 'coffee')) {isExcluded = true;}
+                if ((useCoffeescript && fExt == 'js') || (!useCoffeescript && fExt == 'coffee')) {
+                    isExcluded = true;
+                }
+                if (isTpl && ((useMaterialTpl && isBootstrapTpl) || (!useMaterialTpl && isMaterialTpl))) {
+                    isExcluded = true;
+                }
             }
             var src = path.join(root, f);
             if (!isExcluded) {
-                if (path.basename(f).indexOf('_') == 0) {
-                    var dest = path.join(destination, path.dirname(f), path.basename(f).replace(/^_/, ''));
+                if (isTpl) {
+                    var pattern = /^_/;
+                    if (isMaterialTpl) {
+                        pattern = /^_m_/;
+                    } else if (isBootstrapTpl) {
+                        pattern = /^_b_/;
+                    }
+                    var dest = path.join(destination, path.dirname(f), path.basename(f).replace(pattern, ''));
                     this.template(src, dest);
                 }
                 else {
